@@ -8,8 +8,12 @@ import (
 	"github.com/m7shapan/njson"
 )
 
+type WebClient interface {
+	Do(req *http.Request) (*http.Response, error)
+}
+
 type CryptoService struct {
-	client *http.Client
+	client WebClient
 }
 
 type Quote struct {
@@ -20,7 +24,7 @@ type Quote struct {
 	PercentChange30D float32 `njson:"data.*.quote.USD.percent_change_30d"`
 }
 
-func NewCryptoService(client *http.Client) *CryptoService {
+func NewCryptoService(client WebClient) *CryptoService {
 	return &CryptoService{client}
 }
 
@@ -43,7 +47,7 @@ func (cs *CryptoService) GetQuote(symbol string) (*Quote, error) {
 		return nil, err
 	}
 
-	rawJson, _ := ioutil.ReadAll(res.Body)
+	rawJson, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
 	}
