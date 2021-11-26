@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -13,8 +14,12 @@ func main() {
 		Timeout: time.Second * 10,
 	})
 
-	_, err := cs.GetQuote("DOT")
+	quote, err := cs.GetQuote("BTC")
 	if err != nil {
 		log.Fatal(err)
+	} else {
+		fmt.Println(quote)
 	}
+
+	fmt.Println(cs.GetQuotes("ADA", "DOT"))
 }
